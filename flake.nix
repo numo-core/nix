@@ -1,7 +1,7 @@
 {
   description = "A collection of opinionated technology for numo";
 
-  ouputs = { self }: {
+  outputs = { self }: {
 
     templates = {
 
