@@ -13,19 +13,24 @@
         "aarch64-darwin"
       ];
       buildSystem = "x86_64-linux";
+      pkgs = import nixpkgs { inherit system; };
+      buildPkgs = import nixpkgs { inherit buildSystem; };
     in
     utils.lib.eachSystem systems
-      (system: {
-        packages =
-          import ./pkgs {
-            pkgs = import nixpkgs { inherit system; };
-            buildPkgs = import nixpkgs { inherit buildSystem; };
-          };
-        templates = {
-          ci = {
-            path = ./templates/ci;
-            description = "A template for pre-commit checks that can also be used for CI";
-          };
+      (system:
+        let _pkgs = import ./pkgs {
+          inherit pkgs buildPkgs;
         };
-      });
+        in
+        {
+          packages = {
+            build-lambda = pkgs.callPackage _pkgs.build-lambda { };
+          };
+          templates = {
+            ci = {
+              path = ./templates/ci;
+              description = "A template for pre-commit checks that can also be used for CI";
+            };
+          };
+        });
 }
