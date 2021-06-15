@@ -3,8 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-21.05";
+    utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, utils }:
     let
       systems = [
         "x86_64-linux"
@@ -12,22 +13,23 @@
         "aarch64-darwin"
       ];
       buildSystem = "x86_64-linux";
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f system);
     in
-    {
+    utils.lib.eachSystem systems
+      (system: rec
+      {
+        packages =
+          import ./pkgs {
+            pkgs = import nixpkgs { inherit system; };
+            buildPkgs = import nixpkgs { inherit buildSystem; };
+          };
 
-      packages = forAllSystems (system: import pkgs/default.nix {
-        pkgs = import nixpkgs { inherit system; };
-        buildPkgs = import nixpkgs { inherit buildSystem; };
-      });
-
-      templates = {
-        ci = {
-          path = ./templates/ci;
-          description = "A template for pre-commit checks that can also be used for CI";
+        templates = {
+          ci = {
+            path = ./templates/ci;
+            description = "A template for pre-commit checks that can also be used for CI";
+          };
         };
       };
 
-    };
-
+  ;
 }
