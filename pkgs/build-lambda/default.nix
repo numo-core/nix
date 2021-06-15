@@ -1,7 +1,8 @@
-builtIns@{ poetry2nix, zip, python3 }:
-
-{ buildPython ? python3
-, projectDir ? ./.
+{ poetry2nix
+, zip
+, python3
+, buildPython ? python3
+, projectDir
 }:
 let
   poetryPackage = poetry2nix.mkPoetryApplication {
@@ -10,7 +11,6 @@ let
     overrides = poetry2nix.overrides;
   };
 in
-
 buildPython.buildEnv.override {
   extraLibs = [ poetryPackage ];
   postBuild = ''
