@@ -10,12 +10,11 @@ let
     overrides = poetry2nix.overrides;
   };
 in
-{
-  build-lambda = python.buildEnv.override {
-    extraLibs = [ poetryPackage ];
-    postBuild = ''
-      (cd $out/${python.sitePackages}; ${zip}/bin/zip $out/lambda.zip *)
-      rm -rf $out/bin $out/lib $out/include $out/share
-    '';
-  };
+
+python.buildEnv.override {
+  extraLibs = [ poetryPackage ];
+  postBuild = ''
+    (cd $out/${python.sitePackages}; ${zip}/bin/zip $out/lambda.zip *)
+    rm -rf $out/bin $out/lib $out/include $out/share
+  '';
 }
