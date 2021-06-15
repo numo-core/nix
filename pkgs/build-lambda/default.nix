@@ -1,9 +1,10 @@
-builtIns@{ poetry2nix, zip, python3 }:
+builtIns@{ poetry2nix, zip, python3, system }:
 
 { python ? python3
 , projectDir ? ./.
 }:
 let
+  inherit system;
   poetryPackage = poetry2nix.mkPoetryApplication {
     projectDir = projectDir;
     python = python;

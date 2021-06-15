@@ -18,15 +18,14 @@
       (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          buildPkgs = import nixpkgs { inherit buildSystem; };
+          buildPkgs = import nixpkgs { system = buildSystem; };
           _pkgs = import ./pkgs {
             inherit pkgs buildPkgs;
           };
         in
         {
-          packages = {
-            build-lambda = pkgs.callPackage _pkgs.build-lambda { };
-          };
+          legacyPackages = _pkgs.build-lambda;
+          packages.build-lambda = _pkgs.build-lambda;
           templates = {
             ci = {
               path = ./templates/ci;
