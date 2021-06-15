@@ -2,7 +2,7 @@
 , zip
 , python3
 , buildPython ? python3
-, projectDir ? ./.
+, projectDir
 }:
 let
   poetryPackage = poetry2nix.mkPoetryApplication {
