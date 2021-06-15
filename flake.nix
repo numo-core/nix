@@ -15,21 +15,17 @@
       buildSystem = "x86_64-linux";
     in
     utils.lib.eachSystem systems
-      (system: rec
-      {
+      (system: {
         packages =
           import ./pkgs {
             pkgs = import nixpkgs { inherit system; };
             buildPkgs = import nixpkgs { inherit buildSystem; };
           };
-
         templates = {
           ci = {
             path = ./templates/ci;
             description = "A template for pre-commit checks that can also be used for CI";
           };
         };
-      };
-
-  ;
+      });
 }
