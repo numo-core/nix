@@ -13,14 +13,15 @@
         "aarch64-darwin"
       ];
       buildSystem = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      buildPkgs = import nixpkgs { inherit buildSystem; };
     in
     utils.lib.eachSystem systems
       (system:
-        let _pkgs = import ./pkgs {
-          inherit pkgs buildPkgs;
-        };
+        let
+          pkgs = import nixpkgs { inherit system; };
+          buildPkgs = import nixpkgs { inherit buildSystem; };
+          _pkgs = import ./pkgs {
+            inherit pkgs buildPkgs;
+          };
         in
         {
           packages = {
