@@ -3,9 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-21.05";
-    utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, nixpkgs }:
     let
       systems = [
         "x86_64-linux"
