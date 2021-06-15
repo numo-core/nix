@@ -1,4 +1,4 @@
-builtIns@{ poetry2nix, zip }:
+builtIns@{ poetry2nix, zip, python3 }:
 
 { python ? python3
 , projectDir ? ./.
