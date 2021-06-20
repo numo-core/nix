@@ -7,30 +7,22 @@
   };
   outputs = { self, nixpkgs, utils }:
     let
-      systems = [
-        "x86_64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
+      systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
       buildSystem = "x86_64-linux";
-    in
-    utils.lib.eachSystem systems
-      (system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-          buildPkgs = import nixpkgs { system = buildSystem; };
-          _pkgs = import ./pkgs {
-            inherit pkgs buildPkgs;
+    in utils.lib.eachSystem systems (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        buildPkgs = import nixpkgs { system = buildSystem; };
+        _pkgs = import ./pkgs { inherit pkgs buildPkgs; };
+      in {
+        legacyPackages = _pkgs.build-lambda;
+        packages.build-lambda = _pkgs.build-lambda;
+        templates = {
+          ci = {
+            path = ./templates/ci;
+            description =
+              "A template for pre-commit checks that can also be used for CI";
           };
-        in
-        {
-          legacyPackages = _pkgs.build-lambda;
-          packages.build-lambda = _pkgs.build-lambda;
-          templates = {
-            ci = {
-              path = ./templates/ci;
-              description = "A template for pre-commit checks that can also be used for CI";
-            };
-          };
-        });
+        };
+      });
 }
