@@ -1,16 +1,23 @@
-builtIns@{ srcOnly, poetry2nix, zip, python3 }:
+builtIns@{ stdenv, callPackage, srcOnly, poetry2nix, zip, python3 }:
 
 { python ? python3, projectDir }:
 let
-  poetryPackage = poetry2nix.mkPoetryApplication { inherit projectDir python; };
-  poetryEnv = python.buildEnv.override {
-    extraLibs = [ poetryPackage ];
-    postBuild = ''
-      (cd $out/${python.sitePackages}; ${zip}/bin/zip $out/lambda.zip *)
-      rm -rf $out/bin $out/lib $out/include $out/share
-    '';
+  poetryApplication = rec {
+    pkg = poetry2nix.mkPoetryApplication { inherit projectDir python; };
+    pname = pkg.pname;
+    version = pkg.version;
   };
-in srcOnly {
-  name = "lambda";
+  poetryEnv =
+    python.buildEnv.override { extraLibs = [ poetryApplication.pkg ]; };
+in stdenv.mkDerivation {
+  pname = "${poetryApplication.pname}-lambda-zip";
+  inherit (poetryApplication) version;
   src = poetryEnv;
+
+  dontbuild = true;
+  dontConfigure = true;
+
+  installPhase = ''
+    (cd $src/${python.sitePackages}; ${zip}/bin/zip -r $out *)
+  '';
 }
