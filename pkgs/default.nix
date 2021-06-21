@@ -1,4 +1,5 @@
-{ pkgs, buildPkgs }:
-{
-  build-lambda = pkgs.callPackage ./build-lambda { inherit (buildPkgs) poetry2nix zip python3; };
+{ pkgs, buildPkgs }: {
+  build-lambda = pkgs.callPackage ./build-lambda {
+    inherit (buildPkgs) srcOnly poetry2nix zip python3;
+  };
 }

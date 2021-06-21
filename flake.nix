@@ -4,33 +4,31 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-21.05";
     utils.url = "github:numtide/flake-utils";
+    poetry2nix-src.url = "github:nix-community/poetry2nix";
   };
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, nixpkgs, utils, poetry2nix-src }:
     let
-      systems = [
-        "x86_64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
+      systems = [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ];
       buildSystem = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
-      buildPkgs = import nixpkgs { inherit buildSystem; };
-    in
-    utils.lib.eachSystem systems
-      (system:
-        let _pkgs = import ./pkgs {
-          inherit pkgs buildPkgs;
+    in utils.lib.eachSystem systems (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [ poetry2nix-src.overlay ];
         };
-        in
-        {
-          packages = {
-            build-lambda = pkgs.callPackage _pkgs.build-lambda { };
+        buildPkgs = import nixpkgs {
+          system = buildSystem;
+          overlays = [ poetry2nix-src.overlay ];
+        };
+        _pkgs = import ./pkgs { inherit pkgs buildPkgs; };
+      in {
+        packages = { build-lambda = _pkgs.build-lambda; };
+        templates = {
+          ci = {
+            path = ./templates/ci;
+            description =
+              "A template for pre-commit checks that can also be used for CI";
           };
-          templates = {
-            ci = {
-              path = ./templates/ci;
-              description = "A template for pre-commit checks that can also be used for CI";
-            };
-          };
-        });
+        };
+      });
 }
