@@ -9,26 +9,21 @@
     inputs.nixpkgs.follows = "nixpkgs";
     url = "github:numtide/flake-utils";
   };
-  inputs.nixpkgs.url = "github:nixos/nixpkgs/release-21.05";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
   outputs = { self, nixpkgs, pre-commit-hooks, flake-utils }@inputs:
-    # have to override this because aarch64-darwin isn't a standard system yet
-    let systems = [ "aarch64-darwin" "x86_64-darwin" "x86_64-linux" ];
-    in
-    flake-utils.lib.eachSystem systems
-      (system:
-        {
-          checks = {
-            pre-commit-check = pre-commit-hooks.lib.${system}.run {
-              src = ./.;
-              hooks = {
-                nixpkgs-fmt.enable = true;
-              };
-            };
+    flake-utils.lib.eachDefaultSystem (system: {
+      checks = {
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixpkgs-fmt.enable = true;
           };
-          devShell =
-            nixpkgs.legacyPackages.${system}.mkShell
-              {
-                inherit (self.checks.${system}.pre-commit-check) shellHook;
-              };
-        });
+        };
+      };
+      devShell =
+        nixpkgs.legacyPackages.${system}.mkShell
+          {
+            inherit (self.checks.${system}.pre-commit-check) shellHook;
+          };
+    });
 }
