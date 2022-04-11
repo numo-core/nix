@@ -22,5 +22,7 @@
 
     };
 
+    overlay = (import ./overlay) { };
+
   };
 }
