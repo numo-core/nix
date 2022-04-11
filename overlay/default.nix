@@ -2,7 +2,7 @@ final: prev:
 
 rec {
   aws-okta-processor = prev.callPackage ./pkgs/aws-okta-processor.nix {
-    inherit (final.pkgs) lib fetchFromGithub python39Packages;
-    inherit (final.pkgs.python39Packages) requests beautifulsoup4 docopt boto3 contextlib2;
+    inherit (prev.pkgs) lib fetchFromGithub python39Packages;
+    inherit (prev.pkgs.python39Packages) requests beautifulsoup4 docopt boto3 contextlib2;
   };
 }
