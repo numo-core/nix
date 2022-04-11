@@ -8,8 +8,8 @@ python39Packages.buildPythonApplication {
     # https://github.com/godaddy/aws-okta-processor/pull/50 is merged
     owner = "alex-numo";
     repo = "aws-okta-processor";
-    rev = "e49cd49f9e2daba11e0f1cd0150e8e24ff3ff911";
-    sha256 = "153nkdz9z13nr3i2as40qxww3w4c0qipzaky7pwyfkypmdcivc83";
+    rev = "fd41e9ae3c1a6dcbe844fec9664ade17924b4bb9";
+    sha256 = "0hr5raxjam2afx7mgzch95ji9xsdfp0qih4a8a29vh2la2h9ahgm";
   };
   prePatch = ''
     substituteInPlace setup.py \
