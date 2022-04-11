@@ -1,4 +1,4 @@
-{ lib, fetchFromGithub, python39Packages, requests, beautifulsoup4, docopt, boto3, contextlib2 }:
+{ lib, fetchFromGitHub, python39Packages, requests, beautifulsoup4, docopt, boto3, contextlib2 }:
 
 python39Packages.buildPythonApplication {
   pname = "aws_okta_processor";
