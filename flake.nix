@@ -18,7 +18,7 @@
 
     };
 
-    overlay = import ./overlay;
+    overlay = import ./overlay.nix;
 
   };
 }
